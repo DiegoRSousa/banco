@@ -1,46 +1,29 @@
 package main
 
-import "fmt"
-
-type ContaCorrente struct {
-	titular       string
-	numeroAgencia int
-	numeroConta   int
-	saldo         float64
-}
-
-func (c *ContaCorrente) Sacar(valor float64) string {
-	if valor <= 0 {
-		return "valor para saque inválido!"
-	}
-	if valor <= c.saldo {
-		c.saldo -= valor
-		return "saque realizado com sucesso!"
-	}
-	return "saldo insuficiente!"
-}
-
-func (c *ContaCorrente) Depositar(valor float64) (string, float64) {
-	if valor <= 0 {
-		return "valor para saque inválido!", c.saldo
-	}
-	c.saldo += valor
-	return "deposito realizado com sucesso!", c.saldo
-}
+import (
+	"banco/contas"
+	"fmt"
+)
 
 func main() {
 
-	contaDiego := ContaCorrente{titular: "Diego", numeroAgencia: 589, numeroConta: 100, saldo: 100.90}
-	contaBruna := ContaCorrente{"Bruna", 587, 101, 100.90}
-	var contaPedro *ContaCorrente = new(ContaCorrente)
-	contaPedro.titular = "Pedro"
+	contaDiego := contas.ContaCorrente{Titular: "Diego", NumeroAgencia: 589, NumeroConta: 100, Saldo: 100.90}
+	contaBruna := contas.ContaCorrente{Titular: "Bruna", NumeroAgencia: 587, NumeroConta: 101, Saldo: 100.90}
+	var contaPedro *contas.ContaCorrente = new(contas.ContaCorrente)
+	contaPedro.Titular = "Pedro"
 	fmt.Println(*contaPedro)
 	fmt.Println(contaBruna)
 	fmt.Println(contaDiego)
 
-	fmt.Println(contaBruna.Sacar(-187.), " novo saldo: ", contaBruna.saldo)
+	fmt.Println(contaBruna.Sacar(-187.), " novo saldo: ", contaBruna.Saldo)
 
 	status, valor := contaDiego.Depositar(100)
 	fmt.Println(status, valor)
+
+	statusTransferencia := contaDiego.Transferir(100, &contaBruna)
+
+	fmt.Println(statusTransferencia)
+	fmt.Println(contaDiego.Titular, " saldo: ", contaDiego.Saldo)
+	fmt.Println(contaBruna.Titular, " saldo: ", contaBruna.Saldo)
 
 }
